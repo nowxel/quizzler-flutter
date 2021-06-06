@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quizzler/question.dart';
 
 void main() => runApp(Quizzler());
 
@@ -25,20 +26,14 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  List<Icon> scoreKeeper = [
+  bool done = false;
 
-  ];
+  List<Icon> scoreKeeper = [];
 
-  List<String> questions = [
-    'You can lead a cow down stairs but not up stairs.',
-    'Approximately one quarter of human bones are in the feet.',
-    'A slug\'s blood is green.'
-  ];
-
-  List<bool> answers = [
-    false,
-    true,
-    true
+  List<Question> questions = [
+    Question(question: 'You can lead a cow down stairs but not up stairs.', answer: false),
+    Question(question: 'Approximately one quarter of human bones are in the feet.',answer: true),
+    Question(question: 'A slug\'s blood is green.', answer: true)
   ];
 
   int questionNumber = 0;
@@ -55,7 +50,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                questions[questionNumber],
+                questions[questionNumber].question,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
@@ -79,18 +74,7 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                bool correctAnswer = answers[questionNumber];
-                if (correctAnswer == true){
-                  print('User got it right');
-                }else{
-                  print('User got it wrong');
-                }
-                setState(() {
-                  scoreKeeper.add(Icon(Icons.check, color: Colors.green,));
-                  questionNumber++;
-                });
-                print(questionNumber);
-
+                userAnswer(true);
               },
             ),
           ),
@@ -108,18 +92,7 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-
-                bool correctAnswer = answers[questionNumber];
-                if (correctAnswer == false){
-                  print('User got it right');
-                }else{
-                  print('User got it wrong');
-                }
-                setState(() {
-                  scoreKeeper.add(Icon(Icons.close, color: Colors.red,));
-                  questionNumber++;
-                });
-                //print(questionNumber);
+                userAnswer(false);
               },
             ),
           ),
@@ -129,6 +102,23 @@ class _QuizPageState extends State<QuizPage> {
         )
       ],
     );
+  }
+
+  void userAnswer(bool value) {
+    if (!done) {
+      bool isCorrect = value == questions[questionNumber].answer;
+      print(isCorrect);
+      scoreKeeper.add(Icon(
+        isCorrect ? Icons.check : Icons.close,
+        color: isCorrect ? Colors.green : Colors.red,
+      ));
+      if (questionNumber < questions.length - 1) {
+        questionNumber++;
+      } else {
+        done = true;
+      }
+      setState(() {});
+    }
   }
 }
 
